@@ -68,15 +68,6 @@ export class App extends Component {
       if (response.hits.length === 0) {
         return toast.info('Image not found', toastConfig);
       }
-      //////
-      // this.setState({
-      //   images: response.hits,
-      //   totalPages: Math.ceil(response.totalHits / 12),
-      // });
-      // this.setState({
-      //   images: response.hits,
-      //   totalPages: this.state.page < Math.ceil(response.totalHits / 12 )
-      //  })
        this.setState(prev =>({
         images: [...prev.images, ...response.hits],
         loadMore: this.state.page < Math.ceil(response.totalHits / 12 )
@@ -91,7 +82,7 @@ export class App extends Component {
   };
 
   handleSubmit = value => {
-    this.setState({ name: value, images: [] });
+    this.setState({ name: value, page: 1, images: [] });
   };
 
   render() {
