@@ -49,6 +49,7 @@ export class App extends Component {
     this.setState({ largeImage: largeImage });
     this.toggleModal();
   };
+  
   componentDidUpdate(_, prevState) {
     const { name, page } = this.state;
     if (prevState.name !== name || prevState.page !== page) {
@@ -58,18 +59,29 @@ export class App extends Component {
 
   searchImagees = async () => {
     const { name, page } = this.state;
+    this.setState({ isLoading: true});
     try {
-      this.setState({ isLoading: true, images: [] });
+
 
        const response = await fetchImages(name, page);
 
       if (response.hits.length === 0) {
         return toast.info('Image not found', toastConfig);
       }
-      this.setState({
-        images: response.hits,
-        totalPages: Math.ceil(response.totalHits / 12),
-      });
+      //////
+      // this.setState({
+      //   images: response.hits,
+      //   totalPages: Math.ceil(response.totalHits / 12),
+      // });
+      // this.setState({
+      //   images: response.hits,
+      //   totalPages: this.state.page < Math.ceil(response.totalHits / 12 )
+      //  })
+       this.setState(prev =>({
+        images: [...prev.images, ...response.hits],
+        loadMore: this.state.page < Math.ceil(response.totalHits / 12 )
+       }))
+      /////
     } catch (error) {
       this.setState({ error: error.message });
       toast.error(error.message, toastConfig);
@@ -79,7 +91,7 @@ export class App extends Component {
   };
 
   handleSubmit = value => {
-    this.setState({ name: value });
+    this.setState({ name: value, images: [] });
   };
 
   render() {
